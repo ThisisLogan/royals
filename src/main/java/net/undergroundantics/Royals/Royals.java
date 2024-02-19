@@ -20,17 +20,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Royals extends JavaPlugin {
 
 	private Economy economy = null;
-	
+
 	public Economy getEconomy() {
 		return economy;
 	}
-	
+
 	private Essentials essentials = null;
-	
+
 	public Essentials getEssentials() {
 		return essentials;
 	}
-	
+
 	@Override
 	public void onDisable() {
 		getLogger().info("Disabled");
@@ -45,24 +45,29 @@ public final class Royals extends JavaPlugin {
 			return;
 		}
 
-		if (getServer().getPluginManager().getPlugin("Citizens") == null || getServer().getPluginManager().getPlugin("Citizens").isEnabled() == false) {
-			getLogger().severe(String.format("[%s] Disabled due to no Citizens 2.0 found!", getDescription().getName()));
+		if (getServer().getPluginManager().getPlugin("Citizens") == null
+				|| getServer().getPluginManager().getPlugin("Citizens").isEnabled() == false) {
+			getLogger()
+					.severe(String.format("[%s] Disabled due to no Citizens 2.0 found!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		
+
 		if (!setupEssentials()) {
 			getLogger().severe(String.format("[%s] Disabled due to no Essentials found!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		
-		CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Teller.class).withName(Teller.NAME));
-		
-		Centrelink.run(this);	
+
+		CitizensAPI.getTraitFactory()
+				.registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(Teller.class).withName(Teller.NAME));
+
+		Centrelink.run(this);
+
+		getCommand("withdraw").setExecutor(new Piggybank());
 	}
-	
-	private boolean setupEssentials() {	
+
+	private boolean setupEssentials() {
 		Plugin plugin = getServer().getPluginManager().getPlugin("Essentials");
 		if (plugin == null || !plugin.isEnabled()) {
 			return false;
@@ -73,7 +78,7 @@ public final class Royals extends JavaPlugin {
 
 	private boolean setupEconomy() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
-		if (vault== null || !vault.isEnabled()) {
+		if (vault == null || !vault.isEnabled()) {
 			return false;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -95,27 +100,30 @@ public final class Royals extends JavaPlugin {
 			displayBalance(player);
 			return true;
 		} else {
-			getLogger().severe(String.format("failed to deposit %d Royals into the account of %s: %s", amount, player.getName(), er.errorMessage));
+			getLogger().severe(String.format("failed to deposit %d Royals into the account of %s: %s", amount,
+					player.getName(), er.errorMessage));
 			return false;
 		}
 	}
-	
+
 	public Boolean withdraw(Player player, int amount) {
-		EconomyResponse er = economy.withdrawPlayer(player, amount);		
+		EconomyResponse er = economy.withdrawPlayer(player, amount);
 		if (er.transactionSuccess()) {
 			getLogger().info(String.format("withdrew %d Royals from the account of %s", amount, player.getName()));
 			displayBalance(player);
 			return true;
 		} else {
-			getLogger().severe(String.format("failed to withdraw %d Royals from the account of %s: %s", amount, player.getName(), er.errorMessage));
+			getLogger().severe(String.format("failed to withdraw %d Royals from the account of %s: %s", amount,
+					player.getName(), er.errorMessage));
 			return false;
 		}
 	}
-	
+
 	private void displayBalance(Player player) {
-		messagePlayer(player, ChatColor.LIGHT_PURPLE + String.format("Your balance is now: %s Royals", new DecimalFormat("#.##").format(economy.getBalance(player))));
+		messagePlayer(player, ChatColor.LIGHT_PURPLE + String.format("Your balance is now: %s Royals",
+				new DecimalFormat("#.##").format(economy.getBalance(player))));
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		if (!(sender instanceof Player)) {
 			return true;

@@ -9,6 +9,11 @@ commands:
     usage: /<command>
     permission: royals.bankteller.create
     permission-message: You don't have <permission>
+  withdraw:
+    description: Withdraw an amount of Royals.
+    usage: /<command>
+    permission: royals.balance.withdraw
+    permission-message: You don't have <permission>
 permissions:
   royals.*:
     description: Gives access to all Royals commands
@@ -24,5 +29,8 @@ permissions:
     default: op
   royals.bankteller.use:
     description: Allows you to interact with bank tellers
+    default: true
+  royals.balance.withdraw:
+    description: Allows you to withdraw royals directly to inventory
     default: true
 depend: [Vault, Citizens, Essentials]

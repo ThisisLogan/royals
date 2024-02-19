@@ -14,7 +14,7 @@ public class Royal extends ItemStack {
 	public Royal() {
 		this(1);
 	}
-	
+
 	public Royal(int amount) {
 		this(ROYAL_NAME, ROYAL_LORE, amount);
 	}
@@ -22,7 +22,7 @@ public class Royal extends ItemStack {
 	public Royal(String name, List<String> lore) {
 		this(name, lore, 1);
 	}
-	
+
 	public Royal(String name, List<String> lore, int amount) {
 		super(Material.EMERALD, amount);
 		addUnsafeEnchantment(Enchantment.DURABILITY, 1);
